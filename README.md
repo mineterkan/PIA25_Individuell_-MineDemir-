@@ -35,7 +35,7 @@ Filerna `queries.sql` (G-nivå) och `queries_advanced.sql` (VG-nivå) innehålle
 
 ## 3. Python-Integration (Del 1.3)
 
-Python-applikationen använder **SQLAlchemy ORM** för att hantera databasanslutningen. Funktionerna i `queries.py` använder **parameteriserade queries** (med `:brand` och `:email` placeholders) för att förhindra SQL Injection-attacker, vilket är ett viktigt säkerhetskrav.
+Python-applikationen använder **SQLAlchemy ORM** för att hantera databasanslutningen. "Funktionerna i queries.py använder SQLAlchemy ORM för att bygga säkra queries. ORM-lagret hanterar parametrisering automatiskt i bakgrunden för att förhindra SQL Injection."
 
 ## 4. Optimering och Index (Del 2.2)
 
