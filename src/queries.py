@@ -126,19 +126,3 @@ def get_products_with_average_rating(session):
         .order_by(func.avg(Review.rating).desc())
         .all()
     )
-
-def get_pending_orders_with_customers(session):
-    """Return all pending orders including customer names and shipping info."""
-    return (
-        session.query(
-            Order.id.label("order_id"),
-            func.concat(Customer.first_name, " ", Customer.last_name).label("customer_name"),
-            Order.order_date,
-            Order.total_amount,
-            Order.shipping_city
-        )
-        .join(Customer, Order.customer_id == Customer.id)
-        .filter(Order.status == 'pending')
-        .order_by(Order.order_date)
-        .all()
-    )
