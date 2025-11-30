@@ -15,10 +15,6 @@ from queries import (
 )
 
 def display_report(title: str, results: list):
-    """
-    Prints query results in a clean table format using the tabulate library.
-    Assumes results are a list of dictionaries (list of dicts).
-    """
     print("=" * 70)
     print(f"| REPORT TITLE: {title:<50} |")
     print("=" * 70)
@@ -27,14 +23,29 @@ def display_report(title: str, results: list):
         print("--- No results found for this query. ---")
         return
 
-    # tabulate automatically extracts headers from the dictionary keys
+    processed_results = []
+    for row in results:
+        if hasattr(row, "__dict__"):
+            row_dict = row.__dict__.copy()
+            row_dict.pop('_sa_instance_state', None)
+            processed_results.append(row_dict)
+        #  (Row object)
+        elif hasattr(row, "_mapping"):
+             processed_results.append(dict(row._mapping))
+        else:
+             # (fallback)
+             processed_results.append(row)
+
+    if not processed_results:
+        print("--- No displayable data found. ---")
+        return
+        
     headers = "keys"
-    table_format = "github" # Using a clean, modern table format
+    table_format = "github"
     
-    print(tabulate(results, headers=headers, tablefmt=table_format, numalign="left"))
+    print(tabulate(processed_results, headers=headers, tablefmt=table_format, numalign="left"))
     print(f"\n({len(results)} rows listed)\n")
     print("-" * 70)
-
 
 def run_analysis():
     """Main analysis engine: Executes all queries and generates the report."""
