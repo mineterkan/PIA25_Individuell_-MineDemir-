@@ -2,8 +2,8 @@
 
 -- Subqueries (2 queries)
 
--- 1. Hitta alla produkter vars pris är högre än genomsnittspriset
--- Jämför varje produkts pris med det globala genomsnittspriset (beräknat i subquery).
+-- 1. Find all products whose price is higher than the average price
+-- Compares each product's price with the global average price (calculated in the subquery).
 SELECT 
     name, 
     price, 
@@ -15,8 +15,8 @@ WHERE price > (
 )
 ORDER BY price DESC;
 
--- 2. Hitta kunder som har beställt fler än genomsnittligt antal beställningar
--- Beräknar genomsnittligt antal beställningar per kund ve sedan väljer endast kunder med fler beställningar än detta genomsnitt.
+-- 2. Find customers who have placed more than the average number of orders
+-- Calculates the average number of orders per customer and then selects only customers with more orders than this average.
 SELECT 
     c.first_name || ' ' || c.last_name AS customer_full_name,
     COUNT(o.id) AS total_orders
@@ -33,10 +33,10 @@ HAVING COUNT(o.id) > (
 )
 ORDER BY total_orders DESC;
 
--- Window functions (2 queries) - PostgreSQL-specifikt
+-- Window functions (2 queries) - PostgreSQL specific
 
--- 3. Ranka produkter per tillverkare baserat på pris (ROW_NUMBER)
--- Använder ROW_NUMBER() för att rangordna produkter inom varje märke ('brand_id') efter pris, dyraste först.
+-- 3. Rank products per manufacturer based on price (ROW_NUMBER)
+-- Uses ROW_NUMBER() to rank products within each brand ('brand_id') by price, most expensive first.
 SELECT
     p.name AS product_name,
     b.name AS brand_name,
@@ -46,14 +46,14 @@ FROM Products p
 JOIN Brands b ON p.brand_id = b.id
 ORDER BY brand_name, price_rank_in_brand;
 
--- 4. Visa varje kunds totala spending och deras rank bland alla kunder (RANK)
--- Använder RANK() för att rangordna kunder baserat på deras totala spenderade belopp.
+-- 4. Show each customer's total spending and their rank among all customers (RANK)
+-- Uses RANK() to rank customers based on their total spent amount.
 SELECT
     customer_full_name,
     total_spent,
     RANK() OVER (ORDER BY total_spent DESC) AS spending_rank
 FROM (
-    -- Subquery för att beräkna totalt spenderat belopp per kund
+    -- Subquery to calculate total amount spent per customer
     SELECT 
         c.first_name || ' ' || c.last_name AS customer_full_name,
         COALESCE(SUM(o.total_amount), 0) AS total_spent
@@ -63,10 +63,10 @@ FROM (
 ) AS customer_spending
 ORDER BY spending_rank, customer_full_name;
 
--- CASE och villkorlig logik (2 queries)
+-- CASE and conditional logic (2 queries)
 
--- 5. Kategorisera produkter som 'Budget' (<1000), 'Medium' (1000-5000), 'Premium' (>5000)
--- Använder CASE-uttryck för att tilldela en prisnivå-etikett till varje produkt.
+-- 5. Categorize products as 'Budget' (<1000), 'Medium' (1000-5000), 'Premium' (>5000)
+-- Uses a CASE expression to assign a price tier label to each product.
 SELECT
     name,
     price,
@@ -78,15 +78,15 @@ SELECT
 FROM Products
 ORDER BY price DESC;
 
--- 6. Visa kunder som 'VIP' (>3 beställningar), 'Regular' (2-3), 'New' (1)
--- Använder CASE-uttryck för att kategorisera kunder baserat på deras totala antal beställningar.
+-- 6. Show customers as 'VIP' (>3 orders), 'Regular' (2-3), 'New' (1)
+-- Uses a CASE expression to categorize customers based on their total number of orders.
 SELECT
     c.first_name || ' ' || c.last_name AS customer_full_name,
     COUNT(o.id) AS total_orders,
     CASE
         WHEN COUNT(o.id) > 3 THEN 'VIP'
         WHEN COUNT(o.id) >= 2 THEN 'Regular'
-        ELSE 'New' -- 0 eller 1 beställning
+        ELSE 'New' -- 0 or 1 order
     END AS customer_level
 FROM Customers c
 LEFT JOIN Orders o ON c.id = o.customer_id
