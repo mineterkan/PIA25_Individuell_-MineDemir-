@@ -1,8 +1,7 @@
 # Webshop-f-r-elektronik
 # 🛒 PIA25 Databasteknik: Individuell Examination (Webshop för Elektronik)
 
-**Student:** [Ditt Namn]
-**Betygsnivå:** Väl Godkänd (VG)
+**Student:** Mine Demir
 
 Detta projekt är den individuella examinationen för kursen Databasteknik (PIA25) och syftar till att demonstrera förmågan att designa, implementera, analysera och optimera en databas.
 
