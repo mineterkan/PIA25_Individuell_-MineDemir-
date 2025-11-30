@@ -9,7 +9,8 @@ from database import get_session
 from queries import (
     get_all_products, get_products_over_price, get_orders_from_year, 
     get_pending_orders, get_products_with_brands, get_orders_with_customer_names, 
-    get_customer_purchases, get_product_count_per_brand, get_top_spending_customers, 
+    get_customer_purchases, get_product_count_per_brand, get_top_spending_customers,
+    get_products_with_average_rating
 
 )
 
